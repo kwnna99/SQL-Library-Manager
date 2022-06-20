@@ -19,12 +19,12 @@ router.get('/', asyncHandler(async (req, res) => {
     res.render("index", { books, title: "Book Library" });
 }));
 
-/* Create a new article form. */
+/* Create a new book form. */
 router.get('/new', (req, res) => {
     res.render("new-book", {book:{}, title: "New Book" });
   });
 
-/* POST create article. */
+/* POST create book. */
 router.post('/new', asyncHandler(async (req, res) => {
     let book;
     try {
@@ -40,7 +40,7 @@ router.post('/new', asyncHandler(async (req, res) => {
     }
   }));
   
-  /* GET individual article. */
+  /* GET individual book. */
   router.get("/:id", asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if(book) {
@@ -51,7 +51,7 @@ router.post('/new', asyncHandler(async (req, res) => {
     }
   })); 
   
-  /* Update an article. */
+  /* Update an book. */
   router.post('/:id', asyncHandler(async (req, res) => {
     let book;
     try {
@@ -74,7 +74,7 @@ router.post('/new', asyncHandler(async (req, res) => {
     }
   }));
 
-  /* Delete individual article. */
+  /* Delete individual book. */
 router.post('/:id/delete', asyncHandler(async (req ,res) => {
   const book = await Book.findByPk(req.params.id);
   if(book) {
