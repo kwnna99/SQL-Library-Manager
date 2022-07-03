@@ -41,18 +41,21 @@ router.post('/new', asyncHandler(async (req, res) => {
   }));
   
   /* GET individual book. */
-  router.get("/:id", asyncHandler(async (req, res) => {
+  router.get("/:id", asyncHandler(async (req, res,next) => {
     const book = await Book.findByPk(req.params.id);
     if(book) {
       console.log(book);
       res.render("update-book", { book,title:"Update Book" });  
     } else {
-      res.sendStatus(404);
+      const err = new Error();
+      err.status = 404;
+      err.message = "No book exists with that ID";
+      next(err)
     }
   })); 
   
   /* Update an book. */
-  router.post('/:id', asyncHandler(async (req, res) => {
+  router.post('/:id', asyncHandler(async (req, res,next) => {
     let book;
     try {
       book = await Book.findByPk(req.params.id);
@@ -60,7 +63,10 @@ router.post('/new', asyncHandler(async (req, res) => {
         await book.update(req.body);
         res.redirect("/books/" + book.id); 
       } else {
-        res.sendStatus(404);
+          const err = new Error();
+          err.status = 404;
+          err.message = "No book exists with that ID";
+          next(err);
       }
     } catch (error) {
       if(error.name === "SequelizeValidationError") {
@@ -75,13 +81,16 @@ router.post('/new', asyncHandler(async (req, res) => {
   }));
 
   /* Delete individual book. */
-router.post('/:id/delete', asyncHandler(async (req ,res) => {
+router.post('/:id/delete', asyncHandler(async (req ,res,next) => {
   const book = await Book.findByPk(req.params.id);
   if(book) {
     await book.destroy();
     res.redirect("/books");
   } else {
-    res.sendStatus(404);
+    const err = new Error();
+    err.status = 404;
+    err.message = "No book exists with that ID";
+    next(err);
   }
 }));
   module.exports = router;

@@ -44,17 +44,27 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+//404 error handler
+app.use((req, res, next) => {
+  const err = new Error('Oops! Looks like this page does not exist!');
+  err.status = 404;
+  res.status(err.status);
+  res.render('page-not-found',err);
+});
+
+//general error handler
+app.use((err, req, res, next) => {
   res.locals.error = err;
   if(err.status!=404){
     err.message= 'Oops! Looks like something went wrong.';
     err.status=(err.status||500);
     res.status(err.status);
-    res.render('error',{err,title:err.message});
+    res.render('error',err);
   }else{
     res.status(err.status);
-    res.render('page-not-found',{err,title:err.message});
+    res.render('page-not-found',err);
   }
+  
 });
 
 module.exports = app;
